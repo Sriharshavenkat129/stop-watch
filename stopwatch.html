@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stop watch</title>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: hsl(0, 0%, 90%);
+        }
+        #container{
+            text-align: center;
+            background-color: white;
+            width: 80%;
+            height:auto;
+            padding: 10px 10px;
+            border-radius: 20px;
+        }
+        #timer{
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        #buttons{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: 5px;
+        }
+        button{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 150%;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 5px;
+            cursor: pointer;
+            width: 30%;
+            text-align: center;
+        }
+        #start{
+            background-color: hsl(120, 100%, 50%)
+        }
+        #start:hover{
+            background-color: hsl(120, 100%, 65%);
+            transition: background-color 0.5s ease;
+              box-shadow: 2px 2px 5px black;
+            font-size: 155%;
+        }
+        #start:active{
+            background-color: hsl(115, 100%, 80%);
+        }
+        #stop{
+            background-color: hsl(0, 98%, 49%);
+        }
+        #stop:hover{
+            background-color:hsl(0, 98%, 59%);
+            transition: background-color 0.5s ease;
+            box-shadow: 2px 2px 5px black;
+            font-size: 155%;
+        }
+        #stop:active{
+            background-color: hsl(0, 98%, 69%);
+        }
+        #reset{
+            background-color: hsl(60, 100%, 50%)
+        }
+        #reset:hover{
+            background-color: hsl(60, 100%, 70%);
+            transition: background-color 0.5s ease;
+            box-shadow: 2px 2px 5px black;
+            font-size: 155%;
+        }
+        #reset:active{
+            background-color: hsl(60, 100%, 80%);
+        }
+        #record{
+            background-color: hsl(200, 100%, 60%);
+        }
+        #record:hover{
+            background-color: hsl(200, 100%, 70%);
+            transition: background-color 0.5s ease;
+            box-shadow: 2px 2px 5px black;
+            font-size: 155%;
+        }
+        #reset:active{
+            background-color: hsl(200, 100%, 75%);
+        }
+        .rec{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 25px;
+        }
+        h3{
+            margin:3%;
+            font-size: 25px;
+        }
+
+    </style>
+    <script>
+        let records=[];
+        let starttime=0;
+        let elapsedtime=0;
+        let currenttime=0;
+        let running=false;
+        let interval;
+        function reset(){
+            starttime=0;
+            elapsedtime=0;
+            currenttime=0;
+            clearInterval(interval);
+            running=false;
+            document.getElementById("timer").textContent="00:00:00:00"
+            records=[];
+            document.getElementById("recordscontainer").textContent="";
+        }
+        function stop(){
+            if(running){
+            running=false;
+            elapsedtime=Date.now()-starttime;
+            clearInterval(interval);
+            }
+        }
+        function start(){
+            if(!running){
+                running=true;
+                starttime=Date.now()-elapsedtime;
+                interval=setInterval(()=>{currenttime=Date.now()-starttime;
+                    displaytime();
+                },10);
+            }
+        }
+        function displaytime(){
+               let time = currenttime;
+
+        let hours = Math.floor(time / (1000 * 60 * 60));
+        time %= (1000 * 60 * 60);
+
+        let minutes = Math.floor(time / (1000 * 60));
+        time %= (1000 * 60);
+
+        let seconds = Math.floor(time / 1000);
+        let milliseconds = Math.floor(time % 1000/10);
+
+        // Pad values for display
+        let h = hours.toString().padStart(2, "00");
+        let m = minutes.toString().padStart(2, "00");
+        let s = seconds.toString().padStart(2, "00");
+        let ms = milliseconds.toString().padStart(2, "0");
+
+            document.getElementById("timer").textContent=`${h}:${m}:${s}:${ms}`;
+        }
+        function record(){
+            let text="<h3>Records</h3>";
+            records.unshift(document.getElementById('timer').textContent)
+            if(records.length>3){
+                records.pop();
+            }
+            records.forEach((element)=>{
+                text+=`<label class="rec"> ${element}</label><br>`;
+            }
+        );
+        document.getElementById("recordscontainer").innerHTML=text;
+        }
+    </script>
+</head>
+<body>
+    <div id="container">
+        <label id="timer">00:00:00:00</label>
+        <div id="buttons">
+            <button id="start" onclick="start()">start</button>
+            <button id="stop" onclick="stop()">stop</button>
+            <button id="reset" onclick="reset()">reset</button>
+            <button id="record" onclick="record()">record</button>
+        </div>
+        <div style="display: block;" id="recordscontainer">
+        </div>
+    </div>
+</body>
+</html>
